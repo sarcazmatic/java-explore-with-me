@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class StatServiceImpl implements StatService {
 
     private final StatRepository statRepository;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public ResponseEntity<Object> postEndpointHit(EndpointHitDtoRequest endpointHitDtoRequest) {
