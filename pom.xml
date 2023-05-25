@@ -26,6 +26,7 @@
         <lombok.version>1.18.22</lombok.version>
         <h2.version>[2.1.0,)</h2.version>
         <postgresql.version>[42.6.0,)</postgresql.version>
+        <spring.actuator.version>[42.6.0,)</spring.actuator.version>
     </properties>
 
     <modules>
@@ -38,6 +39,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-actuator</artifactId>
+                <version>${spring.actuator.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-web</artifactId>
