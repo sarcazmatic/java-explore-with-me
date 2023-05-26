@@ -25,20 +25,16 @@ public class BaseController {
                                                @RequestParam @NotNull String end,
                                                @RequestParam(required = false) List<String> uris,
                                                @RequestParam(name = "unique", required = false, defaultValue = "false") boolean isUnique) {
-        log.info("client ip: {}", request.getRemoteAddr());
-        log.info("endpoint path: {}", request.getRequestURI());
-        if (request.getParameter("uris") == null) {
-            return baseClient.getViewStats(start, end, isUnique);
-        } else {
-            return baseClient.getViewStats(start, end, uris, isUnique);
-        }
+        log.info("client ip: {}, endpoint path: {}", request.getRemoteAddr(), request.getRequestURI());
+        return (request.getParameter("uris") == null
+                ? baseClient.getViewStats(start, end, isUnique)
+                : baseClient.getViewStats(start, end, uris, isUnique));
     }
 
     @PostMapping("/hit")
     public ResponseEntity<Object> postEndpointHit(HttpServletRequest request,
                                                   @RequestBody @Valid EndpointHitDtoRequest endpointHitDtoRequest) {
-        log.info("client ip: {}", request.getRemoteAddr());
-        log.info("endpoint path: {}", request.getRequestURI());
+        log.info("client ip: {}, endpoint path: {}", request.getRemoteAddr(), request.getRequestURI());
         return baseClient.postEndpointHit(endpointHitDtoRequest);
     }
 

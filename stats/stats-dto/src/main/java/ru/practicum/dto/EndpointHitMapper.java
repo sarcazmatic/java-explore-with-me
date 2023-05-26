@@ -7,14 +7,14 @@ import java.time.format.DateTimeFormatter;
 
 public class EndpointHitMapper {
 
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public static EndpointHitDtoRequest toDto(EndpointHit endpointHit) {
         return EndpointHitDtoRequest.builder()
                 .app(endpointHit.getApp())
                 .ip(endpointHit.getIp())
                 .uri(endpointHit.getUri())
-                .timestamp(endpointHit.getCreated().format(formatter))
+                .timestamp(endpointHit.getCreated().format(FORMATTER))
                 .build();
     }
 
@@ -23,7 +23,7 @@ public class EndpointHitMapper {
                 .app(endpointHitDtoRequest.getApp())
                 .ip(endpointHitDtoRequest.getIp())
                 .uri(endpointHitDtoRequest.getUri())
-                .created(LocalDateTime.parse(endpointHitDtoRequest.getTimestamp(), formatter))
+                .created(LocalDateTime.parse(endpointHitDtoRequest.getTimestamp(), FORMATTER))
                 .build();
     }
 

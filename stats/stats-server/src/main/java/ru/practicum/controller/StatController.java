@@ -27,20 +27,16 @@ public class StatController {
                                              @RequestParam String end,
                                              @RequestParam(required = false) List<String> uris,
                                              @RequestParam(name = "unique", required = false, defaultValue = "false") boolean isUnique) {
-        log.info("client ip: {}", request.getRemoteAddr());
-        log.info("endpoint path: {}", request.getRequestURI());
-        if (request.getParameter("uris") == null) {
-            return statService.getViewStats(start, end, new ArrayList<>(), isUnique);
-        } else {
-            return statService.getViewStats(start, end, uris, isUnique);
-        }
+        log.info("client ip: {}, endpoint path: {}", request.getRemoteAddr(), request.getRequestURI());
+        return (request.getParameter("uris") == null
+                ? statService.getViewStats(start, end, new ArrayList<>(), isUnique)
+                : statService.getViewStats(start, end, uris, isUnique));
     }
 
     @PostMapping("/hit")
     public ResponseEntity<Object> postEndpointHit(HttpServletRequest request,
                                                   @RequestBody EndpointHitDtoRequest endpointHitDtoRequest) {
-        log.info("client ip: {}", request.getRemoteAddr());
-        log.info("endpoint path: {}", request.getRequestURI());
+        log.info("client ip: {}, endpoint path: {}", request.getRemoteAddr(), request.getRequestURI());
         return statService.postEndpointHit(endpointHitDtoRequest);
     }
 

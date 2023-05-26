@@ -15,15 +15,15 @@ public interface StatRepository extends JpaRepository<EndpointHit, Long> {
             "WHERE h.created > :start AND h.created < :end " +
             "GROUP BY h.app, h.uri " +
             "ORDER BY COUNT(h.uri) DESC")
-    List<ViewStats> findAllByCreatedBetweenWithoutUniqueIp(@Param("start") LocalDateTime start,
-                                                           @Param("end") LocalDateTime end);
+    List<ViewStats> findAllByCreatedBetween(@Param("start") LocalDateTime start,
+                                            @Param("end") LocalDateTime end);
 
     @Query("SELECT new ru.practicum.model.ViewStats(h.app, h.uri, COUNT(DISTINCT h.ip)) FROM EndpointHit h " +
             "WHERE h.created > :start AND h.created < :end " +
             "GROUP BY h.app, h.uri " +
             "ORDER BY COUNT(h.uri) DESC")
-    List<ViewStats> findByCreatedBetweenWithUniqueIp(@Param("start") LocalDateTime start,
-                                                     @Param("end") LocalDateTime end);
+    List<ViewStats> findAllByCreatedBetweenWithUniqueIp(@Param("start") LocalDateTime start,
+                                                        @Param("end") LocalDateTime end);
 
     @Query("SELECT new ru.practicum.model.ViewStats(h.app, h.uri, COUNT(h.id)) FROM EndpointHit h " +
             "WHERE h.created > :start AND h.created < :end " +
@@ -42,6 +42,5 @@ public interface StatRepository extends JpaRepository<EndpointHit, Long> {
     List<ViewStats> findByCreatedBetweenWithUniqueIpIsInUris(@Param("start") LocalDateTime start,
                                                              @Param("end") LocalDateTime end,
                                                              @Param("uris") List<String> uris);
-
 
 }
