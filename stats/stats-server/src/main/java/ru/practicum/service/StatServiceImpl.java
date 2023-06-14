@@ -62,4 +62,5 @@ public class StatServiceImpl implements StatService {
         }
         return list.stream().map(o -> ViewStatsMapper.toDto(o)).collect(Collectors.toList());
     }
+
 }
