@@ -20,12 +20,12 @@ public class PublicCategoriesController {
 
     @GetMapping
     public List<CategoryDto> getCategory(@RequestParam(required = false, defaultValue = "0") int from,
-                                         @RequestParam(required = false, defaultValue = "10") int size){
+                                         @RequestParam(required = false, defaultValue = "10") int size) {
         return publicCategoriesService.getCategory(PageableMaker.makePageable(from, size));
     }
 
     @GetMapping("/{catId}")
-    public CategoryDto getCategoryById(@PathVariable @NotNull long catId){
+    public CategoryDto getCategoryById(@PathVariable @NotNull long catId) {
         return publicCategoriesService.getCategoryById(catId);
     }
 

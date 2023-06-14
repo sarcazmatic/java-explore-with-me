@@ -12,7 +12,7 @@ import ru.practicum.repository.CategoryRepository;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class AdminCategoriesServiceImpl implements AdminCategoriesService{
+public class AdminCategoriesServiceImpl implements AdminCategoriesService {
 
     private final CategoryRepository categoryRepository;
 

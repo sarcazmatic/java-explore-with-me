@@ -4,14 +4,14 @@ import ru.practicum.model.User;
 
 public class UserMapper {
 
-    public static User fromNewUserRequest(NewUserRequest newUserRequest){
+    public static User fromNewUserRequest(NewUserRequest newUserRequest) {
         return User.builder()
                 .name(newUserRequest.getName())
                 .email(newUserRequest.getEmail())
                 .build();
     }
 
-    public static UserDto toUserDto(User user){
+    public static UserDto toUserDto(User user) {
         return UserDto.builder()
                 .name(user.getName())
                 .email(user.getEmail())
@@ -19,7 +19,7 @@ public class UserMapper {
                 .build();
     }
 
-    public static UserShortDto toUserShortDto(User user){
+    public static UserShortDto toUserShortDto(User user) {
         return UserShortDto.builder()
                 .name(user.getName())
                 .id(user.getId())

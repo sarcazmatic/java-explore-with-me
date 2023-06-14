@@ -149,7 +149,7 @@ public class EventMapper {
 
     public static Event updateEventUserRequest(Event event, UpdateEventUserRequest updateEventUserRequest) {
 
-        if(!event.getState().equals(EventState.CANCELED) && !event.getState().equals(EventState.PENDING))
+        if (!event.getState().equals(EventState.CANCELED) && !event.getState().equals(EventState.PENDING))
             throw new ForbiddenException("Нельзя имзменить опубликованные события!");
 
         if (Optional.ofNullable(updateEventUserRequest.getAnnotation()).isPresent())
