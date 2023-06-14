@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.practicum.dto.*;
+import ru.practicum.exceptions.ValidationException;
 import ru.practicum.model.ViewStats;
 import ru.practicum.repository.StatRepository;
 
@@ -34,6 +35,9 @@ public class StatServiceImpl implements StatService {
         LocalDateTime startTime = LocalDateTime.parse(start, FORMATTER);
         LocalDateTime endTime = LocalDateTime.parse(end, FORMATTER);
 
+        if (endTime.isBefore(startTime) || endTime.isEqual(startTime))
+            throw new ValidationException("Дата/время начала поиска не может быть позже или равну дате/времени конца!");
+
         return formViewStatsDtoResponseList(startTime, endTime, uris, isUnique);
     }
 
@@ -41,6 +45,7 @@ public class StatServiceImpl implements StatService {
                                                                     LocalDateTime endTime,
                                                                     List<String> uris,
                                                                     boolean isUnique) {
+
         List<ViewStats> list;
 
         if (uris.isEmpty()) {
@@ -60,7 +65,7 @@ public class StatServiceImpl implements StatService {
                 log.info("Возвращаем список обращений размером {} с фильтром по uri и уникальным ip", list.size());
             }
         }
-        return list.stream().map(o -> ViewStatsMapper.toDto(o)).collect(Collectors.toList());
+        return list.stream().map(ViewStatsMapper::toDto).collect(Collectors.toList());
     }
 
 }
