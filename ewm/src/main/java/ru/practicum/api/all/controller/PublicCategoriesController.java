@@ -1,7 +1,6 @@
 package ru.practicum.api.all.controller;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.api.all.service.PublicCategoriesService;
 import ru.practicum.dto.category.CategoryDto;
@@ -13,7 +12,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/categories")
-@Slf4j
 public class PublicCategoriesController {
 
     private final PublicCategoriesService publicCategoriesService;

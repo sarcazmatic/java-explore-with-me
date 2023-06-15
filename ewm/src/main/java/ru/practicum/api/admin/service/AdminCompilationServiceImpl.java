@@ -2,8 +2,8 @@ package ru.practicum.api.admin.service;
 
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.compilation.CompilationDto;
 import ru.practicum.dto.compilation.CompilationMapper;
 import ru.practicum.dto.compilation.NewCompilationDto;
@@ -15,13 +15,14 @@ import ru.practicum.repository.EventRepository;
 import java.util.Optional;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class AdminCompilationServiceImpl implements AdminCompilationService {
 
     private final CompilationRepository compilationRepository;
     private final EventRepository eventRepository;
 
+    @Override
+    @Transactional
     public CompilationDto postNewCompilation(NewCompilationDto newCompilationDto) {
         Compilation compilation = CompilationMapper.fromNewCompilationDto(newCompilationDto);
 
@@ -31,23 +32,23 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
         return CompilationMapper.toCompilationDto(compilationRepository.save(compilation));
     }
 
+    @Override
+    @Transactional
     public CompilationDto patchCompilation(long compId, NewCompilationDto newCompilationDto) {
         Compilation compilation = compilationRepository.findById(compId).orElseThrow(
                 () -> new NotFoundException("Подборка не найдена!")
         );
 
-        if (Optional.ofNullable(newCompilationDto.getEvents()).isPresent())
-            compilation.setEvents(eventRepository.findAllById(newCompilationDto.getEvents()));
+        Optional.ofNullable(newCompilationDto.getEvents()).ifPresent(ge -> compilation.setEvents(eventRepository.findAllById(ge)));
 
-        if (Optional.ofNullable(newCompilationDto.getTitle()).isPresent())
-            compilation.setTitle(newCompilationDto.getTitle());
+        Optional.ofNullable(newCompilationDto.getTitle()).ifPresent(compilation::setTitle);
 
-        if ((Optional.ofNullable(newCompilationDto.getPinned()).isPresent()))
-            compilation.setPinned(newCompilationDto.getPinned());
+        Optional.ofNullable(newCompilationDto.getPinned()).ifPresent(compilation::setPinned);
 
         return CompilationMapper.toCompilationDto(compilationRepository.save(compilation));
     }
 
+    @Override
     public void deleteCompilation(long compId) {
         compilationRepository.deleteById(compId);
     }

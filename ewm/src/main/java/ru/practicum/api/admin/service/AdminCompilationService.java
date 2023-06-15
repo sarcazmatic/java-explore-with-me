@@ -12,5 +12,4 @@ public interface AdminCompilationService {
 
     void deleteCompilation(long compId);
 
-
 }

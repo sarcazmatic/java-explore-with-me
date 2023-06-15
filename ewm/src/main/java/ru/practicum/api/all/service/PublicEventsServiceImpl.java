@@ -2,10 +2,10 @@ package ru.practicum.api.all.service;
 
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.codec.DecodingException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.client.WebClientService;
 import ru.practicum.dto.EndpointHitDtoRequest;
 import ru.practicum.dto.event.EventFullDto;
@@ -14,6 +14,7 @@ import ru.practicum.exception.NotFoundException;
 import ru.practicum.repository.EventRepository;
 import ru.practicum.utility.EWMDateTimePattern;
 import ru.practicum.utility.EventState;
+import org.apache.commons.lang3.BooleanUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -22,18 +23,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class PublicEventsServiceImpl implements PublicEventsService {
 
     private final WebClientService baseClient;
     private final EventRepository eventRepository;
 
+    @Override
+    @Transactional
     public EventFullDto getEventById(HttpServletRequest httpServletRequest, long id) {
         EventFullDto eventFullDto = EventMapper.toEventFullDto(eventRepository.findById(id).orElseThrow(()
                 -> new NotFoundException("Событие не найдено")));
 
-        if (eventFullDto.getState().equals(EventState.PUBLISHED)) {
+        if (eventFullDto.getState() == EventState.PUBLISHED) {
             EndpointHitDtoRequest endpointHitDtoRequest = EndpointHitDtoRequest.builder()
                     .timestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern(EWMDateTimePattern.FORMATTER)))
                     .uri(httpServletRequest.getRequestURI())
@@ -53,6 +55,8 @@ public class PublicEventsServiceImpl implements PublicEventsService {
         throw new NotFoundException("Нет подходящих опубликованных событий");
     }
 
+    @Override
+    @Transactional
     public List<EventFullDto> getEventsFiltered(String text,
                                                 List<Long> categories,
                                                 Boolean paid,
@@ -63,32 +67,30 @@ public class PublicEventsServiceImpl implements PublicEventsService {
                                                 Pageable pageable,
                                                 HttpServletRequest httpServletRequest) {
 
-        List<EventFullDto> eventFullDtos;
+        List<EventFullDto> eventFullDtos = (BooleanUtils.isTrue(onlyAvailable)) ?
+                eventRepository.findAllByParamsPublic(text,
+                                categories,
+                                paid,
+                                rangeStart,
+                                rangeEnd,
+                                sort,
+                                pageable)
+                        .stream()
+                        .map(EventMapper::toEventFullDto)
+                        .filter(e -> e.getConfirmedRequests() < e.getParticipantLimit())
+                        .collect(Collectors.toList())
+                :
+                eventRepository.findAllByParamsPublic(text,
+                                categories,
+                                paid,
+                                rangeStart,
+                                rangeEnd,
+                                sort,
+                                pageable)
+                        .stream()
+                        .map(EventMapper::toEventFullDto)
+                        .collect(Collectors.toList());
 
-        if (Boolean.TRUE.equals(onlyAvailable)) {
-            eventFullDtos = eventRepository.findAllByParamsPublic(text,
-                            categories,
-                            paid,
-                            rangeStart,
-                            rangeEnd,
-                            sort,
-                            pageable)
-                    .stream()
-                    .map(EventMapper::toEventFullDto)
-                    .filter(e -> e.getConfirmedRequests() < e.getParticipantLimit())
-                    .collect(Collectors.toList());
-        } else {
-            eventFullDtos = eventRepository.findAllByParamsPublic(text,
-                            categories,
-                            paid,
-                            rangeStart,
-                            rangeEnd,
-                            sort,
-                            pageable)
-                    .stream()
-                    .map(EventMapper::toEventFullDto)
-                    .collect(Collectors.toList());
-        }
 
         for (EventFullDto e : eventFullDtos) {
             EndpointHitDtoRequest endpointHitDtoRequest = EndpointHitDtoRequest.builder()
@@ -107,7 +109,6 @@ public class PublicEventsServiceImpl implements PublicEventsService {
         }
 
         return eventFullDtos;
-
     }
 
     private EventFullDto setViewsToEventFullDto(EventFullDto eventFullDto, HttpServletRequest httpServletRequest) {
@@ -120,7 +121,7 @@ public class PublicEventsServiceImpl implements PublicEventsService {
         return eventFullDto;
     }
 
-    private EventFullDto setViewsToEventFullDtoList(EventFullDto eventFullDto, HttpServletRequest httpServletRequest) {
+    private void setViewsToEventFullDtoList(EventFullDto eventFullDto, HttpServletRequest httpServletRequest) {
 
         try {
             eventFullDto.setViews(baseClient.getStats(LocalDateTime.now().minusYears(100),
@@ -129,8 +130,6 @@ public class PublicEventsServiceImpl implements PublicEventsService {
                     true).get(0).getHits());
         } catch (IndexOutOfBoundsException ignored) {
         }
-
-        return eventFullDto;
     }
 
 }

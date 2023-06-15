@@ -1,7 +1,6 @@
 package ru.practicum.api.admin.controller;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.api.admin.service.AdminUsersService;
@@ -17,19 +16,17 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/users")
-@Slf4j
 public class AdminUsersController {
 
     private final AdminUsersService adminUsersService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto postUser(HttpServletRequest request, @RequestBody @Valid NewUserRequest newUserRequest) {
-        System.out.println(newUserRequest.getName());
+    public UserDto postUser(@RequestBody @Valid NewUserRequest newUserRequest) {
         return adminUsersService.postUser(newUserRequest);
     }
 
-    @GetMapping()
+    @GetMapping
     public List<UserDto> getUsers(HttpServletRequest request,
                                  @RequestParam(required = false) List<Long> ids,
                                  @RequestParam(required = false, defaultValue = "0") int from,
@@ -41,7 +38,7 @@ public class AdminUsersController {
 
     @DeleteMapping ("/{userId}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void deleteUser(HttpServletRequest request, @PathVariable long userId) {
+    public void deleteUser(@PathVariable long userId) {
         adminUsersService.deleteUser(userId);
     }
 }

@@ -21,7 +21,6 @@ public class CompilationMapper {
                         .collect(Collectors.toList())));
 
         return compilationDto;
-
     }
 
     public static Compilation fromNewCompilationDto(NewCompilationDto newCompilationDto) {
@@ -29,7 +28,7 @@ public class CompilationMapper {
                 .title(newCompilationDto.getTitle())
                 .build();
 
-        Optional.ofNullable(newCompilationDto.getPinned()).ifPresent(aBoolean -> compilation.setPinned(aBoolean));
+        Optional.ofNullable(newCompilationDto.getPinned()).ifPresent(compilation::setPinned);
 
         return compilation;
     }

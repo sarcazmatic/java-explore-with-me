@@ -2,9 +2,9 @@ package ru.practicum.api.admin.service;
 
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventMapper;
 import ru.practicum.dto.event.UpdateEventAdminRequest;
@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AdminEventsServiceImpl implements AdminEventsService {
@@ -30,6 +29,8 @@ public class AdminEventsServiceImpl implements AdminEventsService {
     private final CategoryRepository categoryRepository;
     private final RequestRepository requestRepository;
 
+    @Override
+    @Transactional
     public List<EventFullDto> getEventsAdmin(List<Long> users,
                                              List<EventState> states,
                                              List<Long> categories,
@@ -42,31 +43,33 @@ public class AdminEventsServiceImpl implements AdminEventsService {
                 categories,
                 pageable);
 
-        List<EventFullDto> efdList;
+        List<EventFullDto> eventFullDtoList;
 
         if (Optional.ofNullable(rangeStart).isPresent() && Optional.ofNullable(rangeEnd).isPresent()) {
-            efdList = events.stream()
+            eventFullDtoList = events.stream()
                     .filter(o -> o.getEventDate().isAfter(rangeStart.minusNanos(1)))
                     .filter(o -> o.getEventDate().isBefore(rangeEnd.plusNanos(1)))
-                    .map(e -> EventMapper.toEventFullDto(e)).collect(Collectors.toList());
+                    .map(EventMapper::toEventFullDto).collect(Collectors.toList());
         } else if (Optional.ofNullable(rangeStart).isPresent()) {
-            efdList = events.stream()
+            eventFullDtoList = events.stream()
                     .filter(o -> o.getEventDate().isAfter(rangeStart.minusNanos(1)))
-                    .map(e -> EventMapper.toEventFullDto(e)).collect(Collectors.toList());
+                    .map(EventMapper::toEventFullDto).collect(Collectors.toList());
         } else if (Optional.ofNullable(rangeEnd).isPresent()) {
-            efdList = events.stream()
+            eventFullDtoList = events.stream()
                     .filter(o -> o.getEventDate().isBefore(rangeEnd.plusNanos(1)))
-                    .map(e -> EventMapper.toEventFullDto(e)).collect(Collectors.toList());
+                    .map(EventMapper::toEventFullDto).collect(Collectors.toList());
         } else {
-            efdList = events.stream()
-                    .map(e -> EventMapper.toEventFullDto(e)).collect(Collectors.toList());
+            eventFullDtoList = events.stream()
+                    .map(EventMapper::toEventFullDto).collect(Collectors.toList());
         }
-        for (EventFullDto efd : efdList) {
+        for (EventFullDto efd : eventFullDtoList) {
             efd.setConfirmedRequests(requestRepository.countAllByEventIdAndStatus(efd.getId(), RequestStatus.CONFIRMED));
         }
-        return efdList;
+        return eventFullDtoList;
     }
 
+    @Override
+    @Transactional
     public EventFullDto patchEventAdmin(long eventId, UpdateEventAdminRequest updateEventAdminRequest) {
         Event event = EventMapper.updateEventAdminRequest(eventRepository.findById(eventId)
                 .orElseThrow(()

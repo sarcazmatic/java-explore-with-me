@@ -16,5 +16,4 @@ public interface AdminEventsService {
 
     EventFullDto patchEventAdmin(long eventId, UpdateEventAdminRequest updateEventAdminRequest);
 
-
 }

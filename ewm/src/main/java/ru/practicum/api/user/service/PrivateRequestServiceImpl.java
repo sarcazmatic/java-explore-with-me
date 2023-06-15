@@ -1,7 +1,6 @@
 package ru.practicum.api.user.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.dto.request.ParticipationRequestDto;
 import ru.practicum.dto.request.RequestMapper;
@@ -21,7 +20,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class PrivateRequestServiceImpl implements PrivateRequestService {
 
@@ -34,11 +32,13 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
         Event event = eventRepository.findById(eventId).orElseThrow(()
                 -> new NotFoundException("Событие не найдено!"));
 
-        if (event.getParticipantLimit() > 0 && requestRepository.countAllByEventIdAndStatus(eventId, RequestStatus.CONFIRMED) >= event.getParticipantLimit())
+        if (event.getParticipantLimit() > 0 && requestRepository.countAllByEventIdAndStatus(eventId,
+                RequestStatus.CONFIRMED) >= event.getParticipantLimit())
             throw new ForbiddenException("Невозможно подтвердить новую заявку – достигнут лимит заявок");
 
-        if (Optional.ofNullable(requestRepository.findRequestByRequesterIdAndEventId(userId, eventId)).isPresent())
-                throw new ForbiddenException("Нельзя подать заявку повторно");
+        if (Optional.ofNullable(requestRepository.findRequestByRequesterIdAndEventId(userId, eventId)).isPresent()) {
+            throw new ForbiddenException("Нельзя подать заявку повторно");
+        }
 
         if (!event.getState().equals(EventState.PUBLISHED))
             throw new ForbiddenException("Невозможно подать заявку на участие в неопубликованном событии");

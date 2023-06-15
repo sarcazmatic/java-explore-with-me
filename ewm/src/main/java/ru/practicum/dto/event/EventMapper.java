@@ -1,7 +1,6 @@
 package ru.practicum.dto.event;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import ru.practicum.dto.category.CategoryMapper;
 import ru.practicum.dto.user.UserMapper;
 import ru.practicum.exception.ForbiddenException;
@@ -13,7 +12,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-@AllArgsConstructor(onConstructor_ = @Autowired)
+@AllArgsConstructor
 public class EventMapper {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(EWMDateTimePattern.FORMATTER);
@@ -41,9 +40,9 @@ public class EventMapper {
 
             if (!newEventDate.isAfter(LocalDateTime.now().plusHours(2))) {
                 throw new ValidationException("Дата события менее чем за два часа до редактирования");
-            } else {
-                event.setEventDate(newEventDate);
             }
+
+            event.setEventDate(newEventDate);
         }
 
         return event;
@@ -93,20 +92,17 @@ public class EventMapper {
     }
 
     public static Event updateEventAdminRequest(Event event, UpdateEventAdminRequest updateEventAdminRequest) {
-        if (Optional.ofNullable(updateEventAdminRequest.getAnnotation()).isPresent())
-            event.setAnnotation(updateEventAdminRequest.getAnnotation());
+        Optional.ofNullable(updateEventAdminRequest.getAnnotation()).ifPresent(event::setAnnotation);
 
-        if (Optional.ofNullable(updateEventAdminRequest.getDescription()).isPresent())
-            event.setDescription(updateEventAdminRequest.getDescription());
+        Optional.ofNullable(updateEventAdminRequest.getDescription()).ifPresent(event::setDescription);
 
         if (Optional.ofNullable(updateEventAdminRequest.getEventDate()).isPresent()) {
             LocalDateTime newEventDate = LocalDateTime.parse(updateEventAdminRequest.getEventDate(), DateTimeFormatter.ofPattern(EWMDateTimePattern.FORMATTER));
 
             if (!newEventDate.isAfter(LocalDateTime.now().plusHours(1))) {
                 throw new ValidationException("Дата события менее чем за час до редактирования");
-            } else {
-                event.setEventDate(newEventDate);
             }
+            event.setEventDate(newEventDate);
         }
 
         if (Optional.ofNullable(updateEventAdminRequest.getLocation()).isPresent()) {
@@ -114,16 +110,12 @@ public class EventMapper {
             event.setLon(updateEventAdminRequest.getLocation().getLon());
         }
 
-        if (Optional.ofNullable(updateEventAdminRequest.getPaid()).isPresent()) {
-            event.setPaid(updateEventAdminRequest.getPaid());
-        }
+        Optional.ofNullable(updateEventAdminRequest.getPaid()).ifPresent(event::setPaid);
 
         if (updateEventAdminRequest.getParticipantLimit() > 0)
             event.setParticipantLimit(updateEventAdminRequest.getParticipantLimit());
 
-        if (Optional.ofNullable(updateEventAdminRequest.getRequestModeration()).isPresent()) {
-            event.setRequestModeration(updateEventAdminRequest.getRequestModeration());
-        }
+        Optional.ofNullable(updateEventAdminRequest.getRequestModeration()).ifPresent(event::setRequestModeration);
 
         if (Optional.ofNullable(updateEventAdminRequest.getStateAction()).isPresent()) {
             if (updateEventAdminRequest.getStateAction().equals(EventAdminState.PUBLISH_EVENT) && event.getState().equals(EventState.PUBLISHED)) {
@@ -141,8 +133,7 @@ public class EventMapper {
             }
         }
 
-        if (Optional.ofNullable(updateEventAdminRequest.getTitle()).isPresent())
-            event.setTitle(updateEventAdminRequest.getTitle());
+        Optional.ofNullable(updateEventAdminRequest.getTitle()).ifPresent(event::setTitle);
 
         return event;
     }
@@ -152,20 +143,17 @@ public class EventMapper {
         if (!event.getState().equals(EventState.CANCELED) && !event.getState().equals(EventState.PENDING))
             throw new ForbiddenException("Нельзя имзменить опубликованные события!");
 
-        if (Optional.ofNullable(updateEventUserRequest.getAnnotation()).isPresent())
-            event.setAnnotation(updateEventUserRequest.getAnnotation());
+        Optional.ofNullable(updateEventUserRequest.getAnnotation()).ifPresent(event::setAnnotation);
 
-        if (Optional.ofNullable(updateEventUserRequest.getDescription()).isPresent())
-            event.setDescription(updateEventUserRequest.getDescription());
+        Optional.ofNullable(updateEventUserRequest.getDescription()).ifPresent(event::setDescription);
 
         if (Optional.ofNullable(updateEventUserRequest.getEventDate()).isPresent()) {
             LocalDateTime newEventDate = LocalDateTime.parse(updateEventUserRequest.getEventDate(), DateTimeFormatter.ofPattern(EWMDateTimePattern.FORMATTER));
 
             if (!newEventDate.isAfter(LocalDateTime.now().plusHours(2))) {
                 throw new ValidationException("Дата события менее чем за два часа до редактирования");
-            } else {
-                event.setEventDate(newEventDate);
             }
+                event.setEventDate(newEventDate);
         }
 
         if (Optional.ofNullable(updateEventUserRequest.getLocation()).isPresent()) {
@@ -173,16 +161,13 @@ public class EventMapper {
             event.setLon(updateEventUserRequest.getLocation().getLon());
         }
 
-        if (Optional.ofNullable(updateEventUserRequest.getPaid()).isPresent()) {
-            event.setPaid(updateEventUserRequest.getPaid());
-        }
+        Optional.ofNullable(updateEventUserRequest.getPaid()).ifPresent(event::setPaid);
 
         if (updateEventUserRequest.getParticipantLimit() > 0)
             event.setParticipantLimit(updateEventUserRequest.getParticipantLimit());
 
-        if (Optional.ofNullable(updateEventUserRequest.getRequestModeration()).isPresent()) {
-            event.setRequestModeration(updateEventUserRequest.getRequestModeration());
-        }
+        Optional.ofNullable(updateEventUserRequest.getRequestModeration()).ifPresent(event::setRequestModeration);
+
         if (Optional.ofNullable(updateEventUserRequest.getStateAction()).isPresent()) {
             if (updateEventUserRequest.getStateAction().equals(EventUserState.SEND_TO_REVIEW)) {
                 event.setState(EventState.PENDING);
@@ -190,8 +175,7 @@ public class EventMapper {
                 event.setState(EventState.CANCELED);
             }
         }
-        if (Optional.ofNullable(updateEventUserRequest.getTitle()).isPresent())
-            event.setTitle(updateEventUserRequest.getTitle());
+        Optional.ofNullable(updateEventUserRequest.getTitle()).ifPresent(event::setTitle);
 
         return event;
     }

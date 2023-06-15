@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.event.*;
 import ru.practicum.dto.request.EventRequestStatusUpdateRequest;
 import ru.practicum.dto.request.EventRequestStatusUpdateResult;
@@ -33,6 +34,7 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
     private final RequestRepository requestRepository;
 
     @Override
+    @Transactional
     public EventFullDto postEvent(long userId, NewEventDto newEventDto) {
         log.info("Создается Event {} от User {}", newEventDto, userId);
         Event newEvent = EventMapper.fromNewEventDto(newEventDto);
@@ -46,6 +48,7 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
     }
 
     @Override
+    @Transactional
     public List<EventShortDto> getEvents(long userId, Pageable pageable) {
         log.info("Выводим список Event от User {}", userId);
         return eventRepository.findAllByInitiatorId(userId, pageable)
@@ -53,6 +56,7 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
     }
 
     @Override
+    @Transactional
     public EventFullDto getEventById(long userId, long eventId) {
         log.info("Выводим Event {} от User {}", eventId, userId);
         EventFullDto eventFullDto = EventMapper.toEventFullDto(eventRepository.findByInitiatorIdAndId(userId, eventId));
@@ -61,6 +65,7 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
     }
 
     @Override
+    @Transactional
     public EventRequestStatusUpdateResult patchRequests(long userId, long eventId, EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest) {
         EventFullDto eventFullDto = getEventById(userId, eventId);
         List<Request> requestStatusUpdateList = requestRepository.findAllByEventIdAndIdIn(eventId, eventRequestStatusUpdateRequest.getRequestIds());
@@ -75,18 +80,18 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
                         () -> new NotFoundException("Запрос не найден")
                 );
 
-                if (!r.getStatus().equals(RequestStatus.PENDING))
+                if (r.getStatus() != RequestStatus.PENDING)
                     throw new ForbiddenException("Сменить статус можно только у заявок в статусе PENDING!");
 
                 request.setStatus(eventRequestStatusUpdateRequest.getStatus());
                 requestRepository.save(request);
 
-                if (request.getStatus().equals(RequestStatus.CONFIRMED)) {
+                if (request.getStatus() == RequestStatus.CONFIRMED) {
                     confirmedRequests.add(RequestMapper.toParticipationRequestDto(request));
                     eventFullDto.setConfirmedRequests(eventFullDto.getConfirmedRequests() + 1);
                 }
 
-                if (request.getStatus().equals(RequestStatus.REJECTED))
+                if (request.getStatus() == RequestStatus.REJECTED)
                     rejectedRequests.add(RequestMapper.toParticipationRequestDto(request));
             }
         }
@@ -94,10 +99,10 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
                 .confirmedRequests(confirmedRequests)
                 .rejectedRequests(rejectedRequests)
                 .build();
-
     }
 
     @Override
+    @Transactional
     public EventFullDto patchEvent(long userId, long eventId, UpdateEventUserRequest updateEventUserRequest) {
         Event event = EventMapper.updateEventUserRequest(eventRepository.findById(eventId).orElseThrow(
                 () -> new NotFoundException("Событие не найдено")
@@ -113,14 +118,13 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
         EventFullDto eventFullDto = EventMapper.toEventFullDto(eventRepository.save(event));
         eventFullDto.setConfirmedRequests(requestRepository.countAllByEventIdAndStatus(eventId, RequestStatus.CONFIRMED));
         return eventFullDto;
-
     }
 
     @Override
+    @Transactional
     public List<ParticipationRequestDto> getRequestsForEvent(long userId, long eventId) {
-        if (!eventRepository.findAllByInitiatorId(userId, Pageable.unpaged()).contains(eventRepository.findById(eventId).orElseThrow(
-                () -> new NotFoundException("У данного пользователя не инициировано событий")
-        )))
+        if (!eventRepository.findAllByInitiatorId(userId, Pageable.unpaged()).contains(eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException("У данного пользователя не инициировано событий"))))
             throw new NotFoundException("Данное событие инициировано другим пользователем");
         return requestRepository.findAllByEventId(eventId).stream()
                 .map(RequestMapper::toParticipationRequestDto)

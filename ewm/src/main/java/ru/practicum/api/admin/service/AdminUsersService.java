@@ -15,5 +15,4 @@ public interface AdminUsersService {
 
     void deleteUser(long userId);
 
-
 }

@@ -13,5 +13,4 @@ public interface PrivateRequestService {
 
     ParticipationRequestDto patchRequestStateToCancel(long userId, long requestId);
 
-
 }
