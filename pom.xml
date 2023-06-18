@@ -27,6 +27,7 @@
         <h2.version>[2.1.0,)</h2.version>
         <postgresql.version>[42.6.0,)</postgresql.version>
         <spring.actuator.version>[3.1.0,)</spring.actuator.version>
+        <apache.lang3.version>3.12.0</apache.lang3.version>
     </properties>
 
     <modules>
@@ -39,6 +40,13 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${apache.lang3.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-actuator</artifactId>
