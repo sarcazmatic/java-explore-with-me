@@ -7,7 +7,7 @@ import ru.practicum.repository.CommentRepository;
 
 @Service
 @RequiredArgsConstructor
-public class AdminCommentsServiceImpl implements AdminCommentsService{
+public class AdminCommentsServiceImpl implements AdminCommentsService {
 
     private final CommentRepository commentRepository;
 

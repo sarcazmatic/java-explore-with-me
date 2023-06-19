@@ -12,8 +12,8 @@ public class CommentMapper {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(EWMDateTimePattern.FORMATTER);
 
     public static Comment fromNewCommentDto(NewCommentDto newCommentDto) {
-        return Comment.builder().
-                comment(newCommentDto.getComment())
+        return Comment.builder()
+                .comment(newCommentDto.getComment())
                 .commentStatus(CommentStatus.PENDING)
                 .created(LocalDateTime.now())
                 .build();
