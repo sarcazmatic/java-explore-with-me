@@ -9,12 +9,13 @@ import ru.practicum.utility.EventState;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findAllByInitiatorId(long userId, Pageable pageable);
 
-    Event findByInitiatorIdAndId(long userId, long eventId);
+    Optional<Event> findByInitiatorIdAndId(long userId, long eventId);
 
     @Query("SELECT e FROM Event e WHERE ((:users IS NOT NULL AND e.initiator.id IN :users) OR (:users IS NULL)) " +
             "AND ((:states IS NOT NULL AND e.state IN :states) OR (:states IS NULL)) " +

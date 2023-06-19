@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.api.all.service.PublicEventsService;
+import ru.practicum.dto.comment.CommentDtoResponse;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.exception.ValidationException;
 import ru.practicum.utility.EWMDateTimePattern;
@@ -57,5 +58,10 @@ public class PublicEventsController {
                 onlyAvailable,
                 sort,
                 PageableMaker.makePageable(from, size), httpServletRequest);
+    }
+
+    @GetMapping("/{eventId}/comments")
+    public List<CommentDtoResponse> getComments(@PathVariable long eventId) {
+        return publicEventsService.getComments(eventId);
     }
 }

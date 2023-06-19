@@ -2,6 +2,7 @@ package ru.practicum.api.all.service;
 
 
 import org.springframework.data.domain.Pageable;
+import ru.practicum.dto.comment.CommentDtoResponse;
 import ru.practicum.dto.event.EventFullDto;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,4 +22,6 @@ public interface PublicEventsService {
                                          String sort,
                                          Pageable pageable,
                                          HttpServletRequest httpServletRequest);
+
+    List<CommentDtoResponse> getComments(long eventId);
 }

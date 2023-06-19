@@ -46,7 +46,6 @@ public class BaseController {
     public void postEndpointHit(HttpServletRequest request,
                                 @RequestBody @Valid EndpointHitDtoRequest endpointHitDtoRequest) {
         log.info("client ip: {}, endpoint path: {}", request.getRemoteAddr(), request.getRequestURI());
-        System.out.println(endpointHitDtoRequest);
         baseClient.postHit(endpointHitDtoRequest.getApp(),
                 endpointHitDtoRequest.getUri(),
                 endpointHitDtoRequest.getIp(),

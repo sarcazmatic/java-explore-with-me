@@ -1,8 +1,10 @@
 package ru.practicum.dto.event;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
 import ru.practicum.dto.category.CategoryDto;
+import ru.practicum.dto.comment.CommentDtoShort;
 import ru.practicum.dto.user.UserShortDto;
 import ru.practicum.utility.Create;
 import ru.practicum.utility.EventState;
@@ -10,6 +12,7 @@ import ru.practicum.utility.Location;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Builder
 @Data
@@ -44,5 +47,7 @@ public class EventFullDto {
     @Size(max = 120, message = "Название слишком длинное (макс 120)")
     private String title;
     private Long views;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private List<CommentDtoShort> comments;
 
 }

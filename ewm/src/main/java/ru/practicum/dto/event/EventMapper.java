@@ -36,7 +36,7 @@ public class EventMapper {
         );
 
         if (Optional.ofNullable(newEventDto.getEventDate()).isPresent()) {
-            LocalDateTime newEventDate = LocalDateTime.parse(newEventDto.getEventDate(), DateTimeFormatter.ofPattern(EWMDateTimePattern.FORMATTER));
+            LocalDateTime newEventDate = LocalDateTime.parse(newEventDto.getEventDate(), FORMATTER);
 
             if (!newEventDate.isAfter(LocalDateTime.now().plusHours(2))) {
                 throw new ValidationException("Дата события менее чем за два часа до редактирования");
@@ -74,7 +74,6 @@ public class EventMapper {
                 .id(event.getId())
                 .annotation(event.getAnnotation())
                 .category(CategoryMapper.toCategoryDto(event.getCategory()))
-                .confirmedRequests(0)
                 .eventDate(event.getEventDate().format(FORMATTER))
                 .initiator(UserMapper.toUserShortDto(event.getInitiator()))
                 .paid(event.isPaid())
@@ -148,7 +147,7 @@ public class EventMapper {
         Optional.ofNullable(updateEventUserRequest.getDescription()).ifPresent(event::setDescription);
 
         if (Optional.ofNullable(updateEventUserRequest.getEventDate()).isPresent()) {
-            LocalDateTime newEventDate = LocalDateTime.parse(updateEventUserRequest.getEventDate(), DateTimeFormatter.ofPattern(EWMDateTimePattern.FORMATTER));
+            LocalDateTime newEventDate = LocalDateTime.parse(updateEventUserRequest.getEventDate(), FORMATTER);
 
             if (!newEventDate.isAfter(LocalDateTime.now().plusHours(2))) {
                 throw new ValidationException("Дата события менее чем за два часа до редактирования");
