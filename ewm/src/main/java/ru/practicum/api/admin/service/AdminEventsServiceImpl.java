@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.client.WebClientService;
+import ru.practicum.dto.ViewStatsDtoResponse;
 import ru.practicum.dto.comment.CommentDtoShort;
 import ru.practicum.dto.comment.CommentMapper;
 import ru.practicum.dto.event.EventFullDto;
@@ -74,11 +75,7 @@ public class AdminEventsServiceImpl implements AdminEventsService {
         }
         for (EventFullDto efd : eventFullDtoList) {
             efd.setConfirmedRequests(requestRepository.countAllByEventIdAndStatus(efd.getId(), RequestStatus.CONFIRMED));
-            try {
-                efd.setViews(setViewsToEventFullDtoList(efd, httpServletRequest));
-            } catch (IndexOutOfBoundsException ignored) {
-                log.warn("Поймана ошибка во время обращения к серверу статистика");
-            }
+            efd.setViews(setViewsToEventFullDtoList(efd, httpServletRequest));
             efd.setComments(setCommentsToEventFullDto(efd));
         }
         return eventFullDtoList;
@@ -97,11 +94,7 @@ public class AdminEventsServiceImpl implements AdminEventsService {
         EventFullDto eventFullDto = EventMapper.toEventFullDto(eventRepository.save(event));
         eventFullDto.setConfirmedRequests(requestRepository.countAllByEventIdAndStatus(eventId, RequestStatus.CONFIRMED));
         eventFullDto.setComments(setCommentsToEventFullDto(eventFullDto));
-        try {
-            eventFullDto.setViews(setViewsToEventFullDto(httpServletRequest));
-        } catch (IndexOutOfBoundsException ignored) {
-            log.warn("Поймана ошибка во время обращения к серверу статистика");
-        }
+        eventFullDto.setViews(setViewsToEventFullDto(httpServletRequest));
         return eventFullDto;
     }
 
@@ -110,24 +103,37 @@ public class AdminEventsServiceImpl implements AdminEventsService {
                 .map(CommentMapper::toCommentDtoShort).collect(Collectors.toList());
     }
 
-    private long setViewsToEventFullDto(HttpServletRequest httpServletRequest) throws IndexOutOfBoundsException {
+    private long setViewsToEventFullDto(HttpServletRequest httpServletRequest) {
+        String path = (httpServletRequest.getRequestURI());
+        int charIndex = path.indexOf("/events");
+        long views = 0;
 
-        return baseClient.getStats(LocalDateTime.now().minusYears(100),
+        List<ViewStatsDtoResponse> list = baseClient.getStats(LocalDateTime.now().minusYears(100),
                 LocalDateTime.now().plusYears(100),
-                List.of(httpServletRequest.getRequestURI()),
-                true).get(0).getHits();
+                List.of(path.substring(charIndex)), true);
 
+        for (ViewStatsDtoResponse v : list) {
+            views = v.getHits();
+        }
+
+        return views;
     }
 
-    private long setViewsToEventFullDtoList(EventFullDto eventFullDto, HttpServletRequest httpServletRequest) throws IndexOutOfBoundsException {
+    private long setViewsToEventFullDtoList(EventFullDto eventFullDto, HttpServletRequest httpServletRequest) {
 
-        String path = httpServletRequest.getRequestURI();
-        int charIndex = path.indexOf("/", 1);
-        return baseClient.getStats(LocalDateTime.now().minusYears(100),
+        String path = (httpServletRequest.getRequestURI() + "/" + eventFullDto.getId());
+        int charIndex = path.indexOf("/events");
+        long views = 0;
+
+        List<ViewStatsDtoResponse> list = baseClient.getStats(LocalDateTime.now().minusYears(100),
                 LocalDateTime.now().plusYears(100),
-                List.of(path.substring(charIndex) + "/" + eventFullDto.getId()),
-                true).get(0).getHits();
+                List.of(path.substring(charIndex)), true);
 
+        for (ViewStatsDtoResponse v : list) {
+            views = v.getHits();
+        }
+
+        return views;
     }
 
 }

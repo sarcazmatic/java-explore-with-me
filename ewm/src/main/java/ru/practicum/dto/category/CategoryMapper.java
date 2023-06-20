@@ -2,18 +2,13 @@ package ru.practicum.dto.category;
 
 import ru.practicum.model.Category;
 
+import javax.validation.constraints.NotNull;
+
 public class CategoryMapper {
 
-    public static Category fromNewCategoryDto(NewCategoryDto newCategoryDto) {
+    public static Category fromNewCategoryDto(@NotNull NewCategoryDto newCategoryDto) {
         return Category.builder()
                 .name(newCategoryDto.getName())
-                .build();
-    }
-
-    public static Category fromCategoryDto(CategoryDto categoryDto) {
-        return Category.builder()
-                .name(categoryDto.getName())
-                .id(categoryDto.getId())
                 .build();
     }
 

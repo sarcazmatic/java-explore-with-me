@@ -216,7 +216,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/136/events/106/comments",
+					"raw": "http://localhost:8080/users/136/comments/events/106/",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -225,9 +225,10 @@
 					"path": [
 						"users",
 						"136",
+						"comments",
 						"events",
 						"106",
-						"comments"
+						""
 					]
 				}
 			},
@@ -269,7 +270,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/136/events/404/comments",
+					"raw": "http://localhost:8080/users/136/comments/events/404",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -278,9 +279,9 @@
 					"path": [
 						"users",
 						"136",
+						"comments",
 						"events",
-						"404",
-						"comments"
+						"404"
 					]
 				}
 			},
@@ -434,7 +435,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/136/events/106/comments",
+					"raw": "http://localhost:8080/users/136/comments/events/106",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -443,9 +444,9 @@
 					"path": [
 						"users",
 						"136",
+						"comments",
 						"events",
-						"106",
-						"comments"
+						"106"
 					]
 				}
 			},
@@ -487,7 +488,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/136/events/106/comments",
+					"raw": "http://localhost:8080/users/136/comments/events/106",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -496,9 +497,9 @@
 					"path": [
 						"users",
 						"136",
+						"comments",
 						"events",
-						"106",
-						"comments"
+						"106"
 					]
 				}
 			},
@@ -540,7 +541,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/136/events/106/comments",
+					"raw": "http://localhost:8080/users/136/comments/events/106",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -549,9 +550,9 @@
 					"path": [
 						"users",
 						"136",
+						"comments",
 						"events",
-						"106",
-						"comments"
+						"106"
 					]
 				}
 			},
@@ -652,7 +653,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/137/events/106/comments",
+					"raw": "http://localhost:8080/users/137/comments/events/106",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -661,16 +662,16 @@
 					"path": [
 						"users",
 						"137",
+						"comments",
 						"events",
-						"106",
-						"comments"
+						"106"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Валидация комментария инициатором события – 400 BAD REQUEST",
+			"name": "Валидация комментария инициатором события",
 			"event": [
 				{
 					"listen": "test",
@@ -706,7 +707,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/136/events/106/comments",
+					"raw": "http://localhost:8080/users/136/comments/events/106",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -715,9 +716,9 @@
 					"path": [
 						"users",
 						"136",
+						"comments",
 						"events",
-						"106",
-						"comments"
+						"106"
 					]
 				}
 			},
@@ -880,7 +881,7 @@
 							"const target = pm.response.json(); // получаем тело ответа в формате JSON",
 							"",
 							"pm.test(\"Тело ответа должно содержать поля comment и commentStatus, данные соответствовать вводным\", function () {",
-							"    pm.expect(target.id).equal(2, 'id комментария должно быть 1')",
+							"    pm.expect(target.id).equal(2, 'id комментария должно быть 2')",
 							"    pm.expect(source.comment).equal(target.comment,'Комментарий в теле ответа должен совпадать с вводными');",
 							"    pm.expect(target.commentStatus).equal('PENDING', 'commentStatus комментария должен быть PENDING');",
 							"});"
@@ -902,7 +903,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/137/events/106/comments",
+					"raw": "http://localhost:8080/users/137/comments/events/106",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -911,9 +912,9 @@
 					"path": [
 						"users",
 						"137",
+						"comments",
 						"events",
-						"106",
-						"comments"
+						"106"
 					]
 				}
 			},
@@ -936,7 +937,7 @@
 							"const target = pm.response.json(); // получаем тело ответа в формате JSON",
 							"",
 							"pm.test(\"Тело ответа должно содержать поля события + поле comments\", function () {",
-							"    pm.expect(target.id).equal(3, 'id комментария должно быть 1')",
+							"    pm.expect(target.id).equal(3, 'id комментария должно быть 3')",
 							"    pm.expect(source.comment).equal(target.comment,'Комментарий в теле ответа должен совпадать с вводными');",
 							"    pm.expect(target.commentStatus).equal('PENDING', 'commentStatus комментария должен быть PENDING');",
 							"});"
@@ -958,7 +959,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/137/events/106/comments",
+					"raw": "http://localhost:8080/users/137/comments/events/106",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -967,9 +968,9 @@
 					"path": [
 						"users",
 						"137",
+						"comments",
 						"events",
-						"106",
-						"comments"
+						"106"
 					]
 				}
 			},
@@ -1012,7 +1013,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/136/events/106/comments",
+					"raw": "http://localhost:8080/users/136/comments/events/106",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -1021,9 +1022,9 @@
 					"path": [
 						"users",
 						"136",
+						"comments",
 						"events",
-						"106",
-						"comments"
+						"106"
 					]
 				}
 			},
@@ -1074,7 +1075,7 @@
 			"response": []
 		},
 		{
-			"name": "Валидация ранее отказанных комментариев инициатором события",
+			"name": "Валидация ранее отказанных комментариев инициатором события Copy",
 			"event": [
 				{
 					"listen": "test",
@@ -1110,7 +1111,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/136/events/106/comments",
+					"raw": "http://localhost:8080/users/136/comments/events/106",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -1119,9 +1120,9 @@
 					"path": [
 						"users",
 						"136",
+						"comments",
 						"events",
-						"106",
-						"comments"
+						"106"
 					]
 				}
 			},
@@ -1583,7 +1584,7 @@
 			"response": []
 		},
 		{
-			"name": "Поиск событий должен возвращать событие БЕЗ поля comments – Admin API",
+			"name": "Поиск событий должен возвращать событие БЕЗ поля comments – Admin API Copy",
 			"event": [
 				{
 					"listen": "test",
@@ -1625,6 +1626,159 @@
 							"key": "users",
 							"value": "136"
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Добавление комментария пользователя 137 к опубликованному событию – №4",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 201 и иметь данные в формате json\", function () {",
+							"    pm.expect(pm.response.code).to.equal(201);",
+							"    pm.response.to.be.withBody; // ответ должен содержать тело",
+							"    pm.response.to.be.json; // и тело ответа должно быть в формате JSON",
+							"}); ",
+							"",
+							"const source = JSON.parse(pm.request.body.raw);",
+							"const target = pm.response.json(); // получаем тело ответа в формате JSON",
+							"",
+							"pm.test(\"Тело ответа должно содержать поля comment и commentStatus, данные соответствовать вводным\", function () {",
+							"    pm.expect(target.id).equal(4, 'id комментария должно быть 4')",
+							"    pm.expect(source.comment).equal(target.comment,'Комментарий в теле ответа должен совпадать с вводными');",
+							"    pm.expect(target.commentStatus).equal('PENDING', 'commentStatus комментария должен быть PENDING');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"comment\": \"Tratatata\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/users/137/comments/events/106",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"137",
+						"comments",
+						"events",
+						"106"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Валидация комментария администратором",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 200 и иметь данные в формате json\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"    pm.response.to.be.withBody; // ответ должен содержать тело",
+							"    pm.response.to.be.json;",
+							"});",
+							"",
+							"const body = pm.response.json();",
+							"",
+							"pm.test(\"Тело ответа должно содержать поля confirmedRequests и commentStatus\", function () {",
+							"    pm.expect(body).to.have.property('confirmedRequests');",
+							"    pm.expect(body.confirmedRequests[0].commentStatus).equal('CONFIRMED', 'статус комментария должен быть CONFIRMED');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"commentIds\": [\n    4\n  ],\n  \"status\": \"CONFIRMED\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/admin/comments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Поиск комментария по id – Public API",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 200 и иметь данные в формате json\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"    pm.response.to.be.withBody; // ответ должен содержать тело",
+							"    pm.response.to.be.json;",
+							"});",
+							"",
+							"const body = pm.response.json();",
+							"",
+							"pm.test(\"Тело ответа должно содержать поле id, comment, created, commentStatus, event, commenter\", function () {",
+							"    pm.expect(body).to.have.property('id');",
+							"    pm.expect(body).to.have.property('comment');",
+							"    pm.expect(body).to.have.property('created');",
+							"    pm.expect(body).to.have.property('commentStatus');",
+							"    pm.expect(body).to.have.property('event');",
+							"    pm.expect(body).to.have.property('commenter');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/comments/4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"comments",
+						"4"
 					]
 				}
 			},

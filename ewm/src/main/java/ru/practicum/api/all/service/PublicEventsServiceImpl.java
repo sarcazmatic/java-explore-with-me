@@ -9,14 +9,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.client.WebClientService;
 import ru.practicum.dto.EndpointHitDtoRequest;
-import ru.practicum.dto.comment.CommentDtoResponse;
 import ru.practicum.dto.comment.CommentDtoShort;
 import ru.practicum.dto.comment.CommentMapper;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventMapper;
-import ru.practicum.dto.user.UserMapper;
 import ru.practicum.exception.NotFoundException;
-import ru.practicum.model.Comment;
 import ru.practicum.repository.CommentRepository;
 import ru.practicum.repository.EventRepository;
 import ru.practicum.repository.UserRepository;
@@ -28,7 +25,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -127,11 +123,7 @@ public class PublicEventsServiceImpl implements PublicEventsService {
                     log.warn("Произошла ошибка кодировки при обращении к клиенту статистики!");
                 }
             }
-            try {
-                e.setViews(setViewsToEventFullDtoList(e, httpServletRequest));
-            } catch (IndexOutOfBoundsException ignored) {
-                log.warn("Произошла ошибка при обращении к клиенту статистики!");
-            }
+            e.setViews(setViewsToEventFullDtoList(e, httpServletRequest));
             e.setComments(setCommentsToEventFullDto(e));
         }
 
@@ -147,32 +139,11 @@ public class PublicEventsServiceImpl implements PublicEventsService {
 
     }
 
-    private long setViewsToEventFullDtoList(EventFullDto eventFullDto, HttpServletRequest httpServletRequest) throws IndexOutOfBoundsException {
-
+    private long setViewsToEventFullDtoList(EventFullDto eventFullDto, HttpServletRequest httpServletRequest) {
         return baseClient.getStats(LocalDateTime.now().minusYears(100),
                 LocalDateTime.now().plusYears(100),
                 List.of(httpServletRequest.getRequestURI() + "/" + eventFullDto.getId()),
                 true).get(0).getHits();
-
-    }
-
-    @Override
-    public List<CommentDtoResponse> getComments(long eventId) {
-
-        List<Comment> comments = commentRepository.findAllByEventId(eventId);
-        List<CommentDtoResponse> commentDtoResponseList = new ArrayList<>();
-
-        for (Comment c : comments) {
-            CommentDtoResponse commentDtoResponse = CommentMapper.toCommentDtoResponse(c);
-            commentDtoResponse.setCommenter(UserMapper.toUserShortDto(userRepository.findById(c.getCommenter().getId()).orElseThrow(
-                    () -> new NotFoundException("Пользователь не найден!")
-            )));
-            commentDtoResponse.setEvent(EventMapper.toEventShortDto(eventRepository.findById(eventId).orElseThrow(
-                    () -> new NotFoundException("Событие не найдено!")
-            )));
-            commentDtoResponseList.add(commentDtoResponse);
-        }
-        return commentDtoResponseList;
     }
 
     private List<CommentDtoShort> setCommentsToEventFullDto(EventFullDto eventFullDto) {

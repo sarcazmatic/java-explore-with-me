@@ -8,6 +8,7 @@ import ru.practicum.exception.ValidationException;
 import ru.practicum.model.Event;
 import ru.practicum.utility.*;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -17,7 +18,7 @@ public class EventMapper {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(EWMDateTimePattern.FORMATTER);
 
-    public static Event fromNewEventDto(NewEventDto newEventDto) {
+    public static Event fromNewEventDto(@NotNull NewEventDto newEventDto) {
         Event event = Event.builder()
                 .lat(newEventDto.getLocation().getLat())
                 .lon(newEventDto.getLocation().getLon())
@@ -90,7 +91,7 @@ public class EventMapper {
         }
     }
 
-    public static Event updateEventAdminRequest(Event event, UpdateEventAdminRequest updateEventAdminRequest) {
+    public static Event updateEventAdminRequest(Event event, @NotNull UpdateEventAdminRequest updateEventAdminRequest) {
         Optional.ofNullable(updateEventAdminRequest.getAnnotation()).ifPresent(event::setAnnotation);
 
         Optional.ofNullable(updateEventAdminRequest.getDescription()).ifPresent(event::setDescription);
@@ -137,7 +138,7 @@ public class EventMapper {
         return event;
     }
 
-    public static Event updateEventUserRequest(Event event, UpdateEventUserRequest updateEventUserRequest) {
+    public static Event updateEventUserRequest(Event event, @NotNull UpdateEventUserRequest updateEventUserRequest) {
 
         if (!event.getState().equals(EventState.CANCELED) && !event.getState().equals(EventState.PENDING))
             throw new ForbiddenException("Нельзя имзменить опубликованные события!");

@@ -1,10 +1,6 @@
 package ru.practicum.api.user.service;
 
 import org.springframework.data.domain.Pageable;
-import ru.practicum.dto.comment.CommentDtoResponse;
-import ru.practicum.dto.comment.CommentStatusUpdateRequest;
-import ru.practicum.dto.comment.CommentStatusUpdateResult;
-import ru.practicum.dto.comment.NewCommentDto;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventShortDto;
 import ru.practicum.dto.event.NewEventDto;
@@ -36,11 +32,5 @@ public interface PrivateEventsService {
                             HttpServletRequest httpServletRequest);
 
     List<ParticipationRequestDto> getRequestsForEvent(long userId, long eventId);
-
-    CommentDtoResponse postNewComment(long userId, long eventId, NewCommentDto newCommentDto);
-
-    CommentStatusUpdateResult patchStatusComments(long userId,
-                                                  long eventId,
-                                                  CommentStatusUpdateRequest commentStatusUpdateRequest);
 
 }

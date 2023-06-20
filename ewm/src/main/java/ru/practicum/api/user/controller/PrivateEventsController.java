@@ -4,10 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.api.user.service.PrivateEventsService;
-import ru.practicum.dto.comment.CommentDtoResponse;
-import ru.practicum.dto.comment.CommentStatusUpdateRequest;
-import ru.practicum.dto.comment.CommentStatusUpdateResult;
-import ru.practicum.dto.comment.NewCommentDto;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventShortDto;
 import ru.practicum.dto.event.NewEventDto;
@@ -52,7 +48,7 @@ public class PrivateEventsController {
     @PatchMapping("/{eventId}/requests")
     public EventRequestStatusUpdateResult patchRequests(@PathVariable long userId,
                                                         @PathVariable long eventId,
-                                                        @RequestBody EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest,
+                                                        @RequestBody(required = false) EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest,
                                                         HttpServletRequest httpServletRequest) {
         return privateEventsService.patchRequests(userId, eventId, eventRequestStatusUpdateRequest, httpServletRequest);
     }
@@ -70,19 +66,6 @@ public class PrivateEventsController {
         return privateEventsService.getRequestsForEvent(userId, eventId);
     }
 
-    @PostMapping("/{eventId}/comments")
-    @ResponseStatus(HttpStatus.CREATED)
-    public CommentDtoResponse postNewComment(@PathVariable long userId,
-                                             @PathVariable long eventId,
-                                             @RequestBody @Valid NewCommentDto newCommentDto) {
-        return privateEventsService.postNewComment(userId, eventId, newCommentDto);
-    }
 
-    @PatchMapping("/{eventId}/comments")
-    public CommentStatusUpdateResult patchStatusComments(@PathVariable long userId,
-                                                         @PathVariable long eventId,
-                                                         @RequestBody CommentStatusUpdateRequest commentStatusUpdateRequest) {
-        return privateEventsService.patchStatusComments(userId, eventId, commentStatusUpdateRequest);
-    }
 
 }
