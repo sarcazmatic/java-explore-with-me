@@ -22,7 +22,6 @@ public class AdminEventsController {
 
     private final AdminEventsService adminEventsService;
 
-
     @GetMapping
     public List<EventFullDto> getEventsAdmin(@RequestParam(required = false) List<Long> users,
                                              @RequestParam(required = false) List<EventState> states,
@@ -51,6 +50,5 @@ public class AdminEventsController {
                                         HttpServletRequest httpServletRequest) {
         return adminEventsService.patchEventAdmin(eventId, updateEventAdminRequest, httpServletRequest);
     }
-
 
 }

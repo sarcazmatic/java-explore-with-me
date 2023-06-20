@@ -30,8 +30,10 @@ public class PublicEventsController {
                                                 @RequestParam(required = false) String text,
                                                 @RequestParam(required = false) List<Long> categories,
                                                 @RequestParam(required = false) Boolean paid,
-                                                @RequestParam(required = false) @DateTimeFormat(pattern = EWMDateTimePattern.FORMATTER) LocalDateTime rangeStart,
-                                                @RequestParam(required = false) @DateTimeFormat(pattern = EWMDateTimePattern.FORMATTER) LocalDateTime rangeEnd,
+                                                @RequestParam(required = false)
+                                                    @DateTimeFormat(pattern = EWMDateTimePattern.FORMATTER) LocalDateTime rangeStart,
+                                                @RequestParam(required = false)
+                                                    @DateTimeFormat(pattern = EWMDateTimePattern.FORMATTER) LocalDateTime rangeEnd,
                                                 @RequestParam(defaultValue = "false") Boolean onlyAvailable,
                                                 @RequestParam(defaultValue = "EVENT_DATE") String sort,
                                                 @RequestParam(defaultValue = "0") int from,

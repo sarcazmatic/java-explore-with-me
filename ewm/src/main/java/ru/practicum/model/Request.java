@@ -30,4 +30,5 @@ public class Request {
     @Enumerated(EnumType.STRING)
     @Column(length = 25, nullable = false)
     private RequestStatus status;
+
 }

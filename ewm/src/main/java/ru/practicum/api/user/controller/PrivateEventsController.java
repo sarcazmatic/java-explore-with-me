@@ -66,6 +66,4 @@ public class PrivateEventsController {
         return privateEventsService.getRequestsForEvent(userId, eventId);
     }
 
-
-
 }

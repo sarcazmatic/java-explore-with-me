@@ -38,6 +38,7 @@ public class AdminEventsServiceImpl implements AdminEventsService {
     private final RequestRepository requestRepository;
     private final CommentRepository commentRepository;
     private final WebClientService baseClient;
+    private static final String URI_PREFIX = "/events";
 
     @Override
     @Transactional
@@ -105,24 +106,16 @@ public class AdminEventsServiceImpl implements AdminEventsService {
 
     private long setViewsToEventFullDto(HttpServletRequest httpServletRequest) {
         String path = (httpServletRequest.getRequestURI());
-        int charIndex = path.indexOf("/events");
-        long views = 0;
-
-        List<ViewStatsDtoResponse> list = baseClient.getStats(LocalDateTime.now().minusYears(100),
-                LocalDateTime.now().plusYears(100),
-                List.of(path.substring(charIndex)), true);
-
-        for (ViewStatsDtoResponse v : list) {
-            views = v.getHits();
-        }
-
-        return views;
+        return viewsFormer(path);
     }
 
     private long setViewsToEventFullDtoList(EventFullDto eventFullDto, HttpServletRequest httpServletRequest) {
-
         String path = (httpServletRequest.getRequestURI() + "/" + eventFullDto.getId());
-        int charIndex = path.indexOf("/events");
+        return viewsFormer(path);
+    }
+
+    private long viewsFormer(String path) {
+        int charIndex = path.indexOf(URI_PREFIX);
         long views = 0;
 
         List<ViewStatsDtoResponse> list = baseClient.getStats(LocalDateTime.now().minusYears(100),

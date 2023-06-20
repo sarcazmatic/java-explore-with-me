@@ -45,9 +45,7 @@ public class EventMapper {
 
             event.setEventDate(newEventDate);
         }
-
         return event;
-
     }
 
     public static EventFullDto toEventFullDto(Event event) {

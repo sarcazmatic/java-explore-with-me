@@ -16,7 +16,6 @@ import ru.practicum.dto.event.EventMapper;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.repository.CommentRepository;
 import ru.practicum.repository.EventRepository;
-import ru.practicum.repository.UserRepository;
 import ru.practicum.utility.CommentStatus;
 import ru.practicum.utility.EWMDateTimePattern;
 import ru.practicum.utility.EventState;
@@ -34,11 +33,10 @@ import java.util.stream.Collectors;
 public class PublicEventsServiceImpl implements PublicEventsService {
 
     private final WebClientService baseClient;
+
     private final EventRepository eventRepository;
 
     private final CommentRepository commentRepository;
-
-    private final UserRepository userRepository;
 
     @Override
     @Transactional

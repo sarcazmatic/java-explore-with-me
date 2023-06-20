@@ -5,4 +5,5 @@ public enum CommentStatus {
     CONFIRMED,
     REJECTED,
     CANCELED
+
 }

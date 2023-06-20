@@ -14,4 +14,5 @@ public class CommentStatusUpdateResult {
     private List<CommentDtoResponse> confirmedRequests;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<CommentDtoResponse> rejectedRequests;
+
 }

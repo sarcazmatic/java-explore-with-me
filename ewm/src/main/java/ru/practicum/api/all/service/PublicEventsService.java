@@ -21,4 +21,5 @@ public interface PublicEventsService {
                                          String sort,
                                          Pageable pageable,
                                          HttpServletRequest httpServletRequest);
+
 }

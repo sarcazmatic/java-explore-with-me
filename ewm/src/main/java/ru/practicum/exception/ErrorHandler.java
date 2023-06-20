@@ -82,4 +82,5 @@ public class ErrorHandler {
                 .timestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern(EWMDateTimePattern.FORMATTER)))
                 .build();
     }
+
 }

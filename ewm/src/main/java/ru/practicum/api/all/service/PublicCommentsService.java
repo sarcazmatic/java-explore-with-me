@@ -9,4 +9,5 @@ public interface PublicCommentsService {
     List<CommentDtoResponse> getComments(long eventId);
 
     CommentDtoResponse getCommentById(long commentId);
+
 }

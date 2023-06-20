@@ -23,4 +23,5 @@ public class PublicCommentsController {
     public CommentDtoResponse getCommentById(@PathVariable long commentId) {
         return publicCommentsService.getCommentById(commentId);
     }
+
 }

@@ -16,4 +16,5 @@ public class CommentStatusUpdateRequest {
     private List<Long> commentIds;
     @NotBlank
     private CommentStatus status;
+
 }

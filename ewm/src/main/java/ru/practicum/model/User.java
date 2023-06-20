@@ -19,4 +19,5 @@ public class User {
     private String email;
     @Column(length = 250, nullable = false)
     private String name;
+
 }
