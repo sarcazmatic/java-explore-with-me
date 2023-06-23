@@ -36,5 +36,4 @@ public class AdminCompilationsController {
         adminCompilationService.deleteCompilation(compId);
     }
 
-
 }

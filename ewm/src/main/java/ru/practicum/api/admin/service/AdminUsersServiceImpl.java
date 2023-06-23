@@ -40,4 +40,5 @@ public class AdminUsersServiceImpl implements AdminUsersService {
     public void deleteUser(long userId) {
         userRepository.deleteById(userId);
     }
+
 }

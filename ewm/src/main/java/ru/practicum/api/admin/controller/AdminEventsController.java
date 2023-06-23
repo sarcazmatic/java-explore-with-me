@@ -10,6 +10,7 @@ import ru.practicum.utility.EWMDateTimePattern;
 import ru.practicum.utility.EventState;
 import ru.practicum.utility.PageableMaker;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,7 +21,6 @@ import java.util.List;
 public class AdminEventsController {
 
     private final AdminEventsService adminEventsService;
-
 
     @GetMapping
     public List<EventFullDto> getEventsAdmin(@RequestParam(required = false) List<Long> users,
@@ -33,20 +33,22 @@ public class AdminEventsController {
                                                  @DateTimeFormat(pattern = EWMDateTimePattern.FORMATTER)
                                                  LocalDateTime rangeEnd,
                                              @RequestParam(defaultValue = "0") int from,
-                                             @RequestParam(defaultValue = "10") int size) {
+                                             @RequestParam(defaultValue = "10") int size,
+                                             HttpServletRequest httpServletRequest) {
         return adminEventsService.getEventsAdmin(users,
                 states,
                 categories,
                 rangeStart,
                 rangeEnd,
-                PageableMaker.makePageable(from, size));
+                PageableMaker.makePageable(from, size),
+                httpServletRequest);
     }
 
     @PatchMapping("/{eventId}")
     public EventFullDto patchEventAdmin(@PathVariable long eventId,
-                                        @RequestBody @Valid UpdateEventAdminRequest updateEventAdminRequest) {
-        return adminEventsService.patchEventAdmin(eventId, updateEventAdminRequest);
+                                        @RequestBody @Valid UpdateEventAdminRequest updateEventAdminRequest,
+                                        HttpServletRequest httpServletRequest) {
+        return adminEventsService.patchEventAdmin(eventId, updateEventAdminRequest, httpServletRequest);
     }
-
 
 }

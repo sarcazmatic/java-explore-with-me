@@ -2,20 +2,27 @@ package ru.practicum.api.admin.service;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.client.WebClientService;
+import ru.practicum.dto.ViewStatsDtoResponse;
+import ru.practicum.dto.comment.CommentDtoShort;
+import ru.practicum.dto.comment.CommentMapper;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventMapper;
 import ru.practicum.dto.event.UpdateEventAdminRequest;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.model.Event;
 import ru.practicum.repository.CategoryRepository;
+import ru.practicum.repository.CommentRepository;
 import ru.practicum.repository.EventRepository;
 import ru.practicum.repository.RequestRepository;
 import ru.practicum.utility.EventState;
 import ru.practicum.utility.RequestStatus;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -23,11 +30,15 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AdminEventsServiceImpl implements AdminEventsService {
 
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final RequestRepository requestRepository;
+    private final CommentRepository commentRepository;
+    private final WebClientService baseClient;
+    private static final String URI_PREFIX = "/events";
 
     @Override
     @Transactional
@@ -36,7 +47,8 @@ public class AdminEventsServiceImpl implements AdminEventsService {
                                              List<Long> categories,
                                              LocalDateTime rangeStart,
                                              LocalDateTime rangeEnd,
-                                             Pageable pageable) {
+                                             Pageable pageable,
+                                             HttpServletRequest httpServletRequest) {
 
         List<Event> events = eventRepository.findAllByParams(users,
                 states,
@@ -64,13 +76,15 @@ public class AdminEventsServiceImpl implements AdminEventsService {
         }
         for (EventFullDto efd : eventFullDtoList) {
             efd.setConfirmedRequests(requestRepository.countAllByEventIdAndStatus(efd.getId(), RequestStatus.CONFIRMED));
+            efd.setViews(setViewsToEventFullDtoList(efd, httpServletRequest));
+            efd.setComments(setCommentsToEventFullDto(efd));
         }
         return eventFullDtoList;
     }
 
     @Override
     @Transactional
-    public EventFullDto patchEventAdmin(long eventId, UpdateEventAdminRequest updateEventAdminRequest) {
+    public EventFullDto patchEventAdmin(long eventId, UpdateEventAdminRequest updateEventAdminRequest, HttpServletRequest httpServletRequest) {
         Event event = EventMapper.updateEventAdminRequest(eventRepository.findById(eventId)
                 .orElseThrow(()
                         -> new NotFoundException("Событие не найдено!")), updateEventAdminRequest);
@@ -80,7 +94,39 @@ public class AdminEventsServiceImpl implements AdminEventsService {
 
         EventFullDto eventFullDto = EventMapper.toEventFullDto(eventRepository.save(event));
         eventFullDto.setConfirmedRequests(requestRepository.countAllByEventIdAndStatus(eventId, RequestStatus.CONFIRMED));
+        eventFullDto.setComments(setCommentsToEventFullDto(eventFullDto));
+        eventFullDto.setViews(setViewsToEventFullDto(httpServletRequest));
         return eventFullDto;
+    }
+
+    private List<CommentDtoShort> setCommentsToEventFullDto(EventFullDto eventFullDto) {
+        return commentRepository.findAllByEventId(eventFullDto.getId()).stream()
+                .map(CommentMapper::toCommentDtoShort).collect(Collectors.toList());
+    }
+
+    private long setViewsToEventFullDto(HttpServletRequest httpServletRequest) {
+        String path = (httpServletRequest.getRequestURI());
+        return viewsFormer(path);
+    }
+
+    private long setViewsToEventFullDtoList(EventFullDto eventFullDto, HttpServletRequest httpServletRequest) {
+        String path = (httpServletRequest.getRequestURI() + "/" + eventFullDto.getId());
+        return viewsFormer(path);
+    }
+
+    private long viewsFormer(String path) {
+        int charIndex = path.indexOf(URI_PREFIX);
+        long views = 0;
+
+        List<ViewStatsDtoResponse> list = baseClient.getStats(LocalDateTime.now().minusYears(100),
+                LocalDateTime.now().plusYears(100),
+                List.of(path.substring(charIndex)), true);
+
+        for (ViewStatsDtoResponse v : list) {
+            views = v.getHits();
+        }
+
+        return views;
     }
 
 }

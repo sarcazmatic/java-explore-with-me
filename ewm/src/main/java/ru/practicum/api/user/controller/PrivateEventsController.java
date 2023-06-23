@@ -13,6 +13,7 @@ import ru.practicum.dto.request.EventRequestStatusUpdateResult;
 import ru.practicum.dto.request.ParticipationRequestDto;
 import ru.practicum.utility.PageableMaker;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -32,28 +33,32 @@ public class PrivateEventsController {
     @GetMapping
     public List<EventShortDto> getEvents(@PathVariable long userId,
                                          @RequestParam(required = false, defaultValue = "0") int from,
-                                         @RequestParam(required = false, defaultValue = "10") int size) {
-        return privateEventsService.getEvents(userId, PageableMaker.makePageable(from, size));
+                                         @RequestParam(required = false, defaultValue = "10") int size,
+                                         HttpServletRequest httpServletRequest) {
+        return privateEventsService.getEvents(userId, PageableMaker.makePageable(from, size), httpServletRequest);
     }
 
     @GetMapping("/{eventId}")
     public EventFullDto getEventById(@PathVariable long userId,
-                                     @PathVariable long eventId) {
-        return privateEventsService.getEventById(userId, eventId);
+                                     @PathVariable long eventId,
+                                     HttpServletRequest httpServletRequest) {
+        return privateEventsService.getEventById(userId, eventId, httpServletRequest);
     }
 
     @PatchMapping("/{eventId}/requests")
     public EventRequestStatusUpdateResult patchRequests(@PathVariable long userId,
                                                         @PathVariable long eventId,
-                                                        @RequestBody EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest) {
-        return privateEventsService.patchRequests(userId, eventId, eventRequestStatusUpdateRequest);
+                                                        @RequestBody(required = false) EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest,
+                                                        HttpServletRequest httpServletRequest) {
+        return privateEventsService.patchRequests(userId, eventId, eventRequestStatusUpdateRequest, httpServletRequest);
     }
 
     @PatchMapping("/{eventId}")
-    public EventFullDto patchEvent(@PathVariable long userId,
+    public EventFullDto patchEvent(HttpServletRequest httpServletRequest,
+                                   @PathVariable long userId,
                                    @PathVariable long eventId,
                                    @RequestBody @Valid UpdateEventUserRequest updateEventUserRequest) {
-        return privateEventsService.patchEvent(userId, eventId, updateEventUserRequest);
+        return privateEventsService.patchEvent(userId, eventId, updateEventUserRequest, httpServletRequest);
     }
 
     @GetMapping("/{eventId}/requests")

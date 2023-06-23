@@ -28,4 +28,5 @@ public class Compilation {
             name = "compilation_fk")},
             inverseJoinColumns = {@JoinColumn(name = "event_fk")})
     private List<Event> events = new ArrayList<>();
+
 }

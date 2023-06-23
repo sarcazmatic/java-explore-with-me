@@ -1,6 +1,6 @@
 package ru.practicum.utility;
 
-public enum RequestStatus {
+public enum CommentStatus {
     PENDING,
     CONFIRMED,
     REJECTED,

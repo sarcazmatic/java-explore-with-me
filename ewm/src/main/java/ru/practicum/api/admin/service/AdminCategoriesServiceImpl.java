@@ -34,4 +34,5 @@ public class AdminCategoriesServiceImpl implements AdminCategoriesService {
     public void deleteCategory(long catId) {
         categoryRepository.deleteById(catId);
     }
+
 }

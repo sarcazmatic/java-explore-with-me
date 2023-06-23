@@ -3,6 +3,7 @@ package ru.practicum.dto.compilation;
 import ru.practicum.dto.event.EventMapper;
 import ru.practicum.model.Compilation;
 
+import javax.validation.constraints.NotNull;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -23,7 +24,7 @@ public class CompilationMapper {
         return compilationDto;
     }
 
-    public static Compilation fromNewCompilationDto(NewCompilationDto newCompilationDto) {
+    public static Compilation fromNewCompilationDto(@NotNull NewCompilationDto newCompilationDto) {
         Compilation compilation = Compilation.builder()
                 .title(newCompilationDto.getTitle())
                 .build();

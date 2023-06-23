@@ -20,4 +20,5 @@ public class NewUserRequest {
     @NotNull
     @Size(min = 2, max = 250)
     private String name;
+
 }

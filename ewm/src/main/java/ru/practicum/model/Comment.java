@@ -4,31 +4,34 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.utility.RequestStatus;
+import ru.practicum.utility.CommentStatus;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Entity
-@Table(name = "requests")
-public class Request {
+@Table(name = "comments")
+public class Comment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
+    @Column(length = 2000, nullable = false)
+    private String comment;
     @Column(nullable = false)
     private LocalDateTime created;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 25, nullable = false)
+    private CommentStatus commentStatus;
     @ManyToOne
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
     @ManyToOne
-    @JoinColumn(name = "requester_id", nullable = false)
-    private User requester;
-    @Enumerated(EnumType.STRING)
-    @Column(length = 25, nullable = false)
-    private RequestStatus status;
+    @JoinColumn(name = "commenter_id", nullable = false)
+    private User commenter;
 
 }

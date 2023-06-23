@@ -9,6 +9,7 @@ import ru.practicum.dto.request.EventRequestStatusUpdateRequest;
 import ru.practicum.dto.request.EventRequestStatusUpdateResult;
 import ru.practicum.dto.request.ParticipationRequestDto;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
@@ -16,13 +17,19 @@ public interface PrivateEventsService {
 
     EventFullDto postEvent(long userId, NewEventDto newEventDto);
 
-    List<EventShortDto> getEvents(long userId, Pageable pageable);
+    List<EventShortDto> getEvents(long userId, Pageable pageable, HttpServletRequest httpServletRequest);
 
-    EventFullDto getEventById(long userId, long eventId);
+    EventFullDto getEventById(long userId, long eventId, HttpServletRequest httpServletRequest);
 
-    EventRequestStatusUpdateResult patchRequests(long userId, long eventId, EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest);
+    EventRequestStatusUpdateResult patchRequests(long userId,
+                                                 long eventId,
+                                                 EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest,
+                                                 HttpServletRequest httpServletRequest);
 
-    EventFullDto patchEvent(long userId, long eventId, UpdateEventUserRequest updateEventUserRequest);
+    EventFullDto patchEvent(long userId,
+                            long eventId,
+                            UpdateEventUserRequest updateEventUserRequest,
+                            HttpServletRequest httpServletRequest);
 
     List<ParticipationRequestDto> getRequestsForEvent(long userId, long eventId);
 

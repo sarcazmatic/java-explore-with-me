@@ -38,7 +38,7 @@ public class WebClientService {
 
         webClient.post()
                 .uri("/hit")
-                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON)
                 .body(Mono.just(endpointHitDTO), EndpointHitDtoRequest.class)
                 .retrieve()
                 .bodyToMono(EndpointHitDtoRequest.class)

@@ -8,6 +8,7 @@ import ru.practicum.exception.ValidationException;
 import ru.practicum.model.Event;
 import ru.practicum.utility.*;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -17,7 +18,7 @@ public class EventMapper {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(EWMDateTimePattern.FORMATTER);
 
-    public static Event fromNewEventDto(NewEventDto newEventDto) {
+    public static Event fromNewEventDto(@NotNull NewEventDto newEventDto) {
         Event event = Event.builder()
                 .lat(newEventDto.getLocation().getLat())
                 .lon(newEventDto.getLocation().getLon())
@@ -36,7 +37,7 @@ public class EventMapper {
         );
 
         if (Optional.ofNullable(newEventDto.getEventDate()).isPresent()) {
-            LocalDateTime newEventDate = LocalDateTime.parse(newEventDto.getEventDate(), DateTimeFormatter.ofPattern(EWMDateTimePattern.FORMATTER));
+            LocalDateTime newEventDate = LocalDateTime.parse(newEventDto.getEventDate(), FORMATTER);
 
             if (!newEventDate.isAfter(LocalDateTime.now().plusHours(2))) {
                 throw new ValidationException("Дата события менее чем за два часа до редактирования");
@@ -44,9 +45,7 @@ public class EventMapper {
 
             event.setEventDate(newEventDate);
         }
-
         return event;
-
     }
 
     public static EventFullDto toEventFullDto(Event event) {
@@ -74,7 +73,6 @@ public class EventMapper {
                 .id(event.getId())
                 .annotation(event.getAnnotation())
                 .category(CategoryMapper.toCategoryDto(event.getCategory()))
-                .confirmedRequests(0)
                 .eventDate(event.getEventDate().format(FORMATTER))
                 .initiator(UserMapper.toUserShortDto(event.getInitiator()))
                 .paid(event.isPaid())
@@ -91,7 +89,7 @@ public class EventMapper {
         }
     }
 
-    public static Event updateEventAdminRequest(Event event, UpdateEventAdminRequest updateEventAdminRequest) {
+    public static Event updateEventAdminRequest(Event event, @NotNull UpdateEventAdminRequest updateEventAdminRequest) {
         Optional.ofNullable(updateEventAdminRequest.getAnnotation()).ifPresent(event::setAnnotation);
 
         Optional.ofNullable(updateEventAdminRequest.getDescription()).ifPresent(event::setDescription);
@@ -138,7 +136,7 @@ public class EventMapper {
         return event;
     }
 
-    public static Event updateEventUserRequest(Event event, UpdateEventUserRequest updateEventUserRequest) {
+    public static Event updateEventUserRequest(Event event, @NotNull UpdateEventUserRequest updateEventUserRequest) {
 
         if (!event.getState().equals(EventState.CANCELED) && !event.getState().equals(EventState.PENDING))
             throw new ForbiddenException("Нельзя имзменить опубликованные события!");
@@ -148,7 +146,7 @@ public class EventMapper {
         Optional.ofNullable(updateEventUserRequest.getDescription()).ifPresent(event::setDescription);
 
         if (Optional.ofNullable(updateEventUserRequest.getEventDate()).isPresent()) {
-            LocalDateTime newEventDate = LocalDateTime.parse(updateEventUserRequest.getEventDate(), DateTimeFormatter.ofPattern(EWMDateTimePattern.FORMATTER));
+            LocalDateTime newEventDate = LocalDateTime.parse(updateEventUserRequest.getEventDate(), FORMATTER);
 
             if (!newEventDate.isAfter(LocalDateTime.now().plusHours(2))) {
                 throw new ValidationException("Дата события менее чем за два часа до редактирования");
